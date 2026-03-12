@@ -1,3 +1,12 @@
-FROM php:8.0-apache
+FROM php:8.2-apache
+
+# Enable mod_rewrite
+RUN a2enmod rewrite
+
+# Copy project files
 COPY . /var/www/html/
-RUN chown -R www-data:www-data /var/www/html/cache
+
+# Permission
+RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 80
