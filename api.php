@@ -39,15 +39,15 @@ $country=$data[0]['country'] ?? "BD";
 
 /* CACHE */
 
-$cache_file="cache/".md5($country).".json";
+//$cache_file="cache/".md5($country).".json";
 
-if(file_exists($cache_file) && (time()-filemtime($cache_file))<$CACHE_TIME){
+//if(file_exists($cache_file) && (time()-filemtime($cache_file))<$CACHE_TIME){
 
-echo file_get_contents($cache_file);
+//echo file_get_contents($cache_file);
 
-exit;
+//exit;
 
-}
+//}
 
 /* LOAD OFFERS */
 
