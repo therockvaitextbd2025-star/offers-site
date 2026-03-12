@@ -1,5 +1,9 @@
 <?php
 
+// Put this at the beginning of api.php// Put this at the beginning of api.php
+echo "Country from DB: " . $country; 
+// After this line the code will not go down, you will only see the country code
+die();
 include "config.php";
 include "engine.php";
 if(!is_dir('cache')) {
