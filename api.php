@@ -59,6 +59,6 @@ $result=json_encode([
 "offers"=>$offers
 ]);
 
-file_put_contents($cache_file,$result);
+//file_put_contents($cache_file,$result);
 
 echo $result;
