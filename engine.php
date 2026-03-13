@@ -8,20 +8,23 @@ $offers=[];
 
 /* CPAGrip */
 /* CPAGrip */
-// আপনি যে নতুন লিঙ্কটি পেয়েছেন, সেটি এখানে বসিয়ে দিন
 $url = "https://www.cpagrip.com/common/offer_feed_json.php?user_id=2441114&pubkey=e90d61c5da43075bef08de5cb528bce2&country=$country&tracking_id=$user_id";
 
 $feed = @file_get_contents($url);
 $data = json_decode($feed, true);
 
-if(isset($data['offers'])){
-    foreach($data['offers'] as $o){
-        $offers[]=[
-            "title"=>$o['title'],
-            "link"=>$o['offerlink'],
-            "payout"=>$o['payout'],
-            "image"=>$o['thumbnail']
-        ];
+// Ekhon screenshot onujayi thik kora holo:
+if(is_array($data)){
+    foreach($data as $o){
+        // Sudhu matro jodi title thake tobei add korbe
+        if(isset($o['title'])){
+            $offers[]=[
+                "title"=>$o['title'],
+                "link"=>$o['offerlink'],
+                "payout"=>$o['payout'],
+                "image"=>$o['offerphoto'] // Screenshot e thumbnail er bodole offerphoto ache
+            ];
+        }
     }
 }
 
