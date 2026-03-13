@@ -7,8 +7,9 @@ global $cpagripKey,$ogadsKey;
 $offers=[];
 
 /* CPAGrip */
-// এখানে তোমার পাবলিক কি এবং প্রাইভেট কি দুটোই একসাথে ব্যবহার করছি
-$url = "https://www.cpagrip.com/common/offer_feed_json.php?pubkey=e90d61c5da43075bef08de5cb528bce2&key=7f0b09da3b2d682f1189d1d6abbf24fc&country=$country&tracking_id=$user_id";
+/* CPAGrip */
+// আপনি যে নতুন লিঙ্কটি পেয়েছেন, সেটি এখানে বসিয়ে দিন
+$url = "https://www.cpagrip.com/common/offer_feed_json.php?user_id=2441114&pubkey=e90d61c5da43075bef08de5cb528bce2&country=$country&tracking_id=$user_id";
 
 $feed = @file_get_contents($url);
 $data = json_decode($feed, true);
@@ -23,6 +24,7 @@ if(isset($data['offers'])){
         ];
     }
 }
+
 
 
 
