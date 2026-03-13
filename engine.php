@@ -4,7 +4,6 @@ function get_user_country($user_id) {
     $supabaseUrl = getenv('SUPABASE_URL');
     $supabaseKey = getenv('SUPABASE_KEY');
     
-    // user_data টেবিল থেকে কান্ট্রি কোড আনছি
     $url = "$supabaseUrl/rest/v1/user_data?id=eq.$user_id&select=country_code";
     
     $ch = curl_init();
@@ -15,7 +14,7 @@ function get_user_country($user_id) {
     curl_close($ch);
     
     $data = json_decode($result, true);
-    return $data[0]['country_code'] ?? 'US'; // ডিফল্ট 'US' দিলাম
+    return $data[0]['country_code'] ?? 'US'; // যদি কিছু না পায় তবে 'US' ডিফল্ট হিসেবে থাকবে
 }
 
 // ২. কান্ট্রি অনুযায়ী অফার লোড করার ফাংশন
@@ -26,8 +25,7 @@ function load_offers($user_id) {
     // প্রথমে কান্ট্রি কোড বের করুন
     $country = get_user_country($user_id);
 
-    // এবার all_offers টেবিল থেকে ওই কান্ট্রির অফারগুলো আনুন
-    // (আপনার ডাটাবেজে কান্ট্রি কলামটি 'country' নামেই আছে ধরে নিলাম)
+    // Supabase থেকে অফারগুলো আনুন
     $url = "$supabaseUrl/rest/v1/all_offers?country=ilike.*$country*&select=*";
     
     $ch = curl_init();
