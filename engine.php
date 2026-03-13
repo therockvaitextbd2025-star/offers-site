@@ -4,9 +4,9 @@ function load_offers($country, $user_id) {
     global $cpagripKey, $ogadsKey;
     $offers = [];
 
-    /* CPAGrip - Using cURL for better reliability */
-    $url = "https://www.cpagrip.com/common/offer_feed_json.php?user_id=2441114&pubkey=e90d61c5da43075bef08de5cb528bce2&country=$country&tracking_id=$user_id&showall=1";
-
+    // Place this link inside your engine.php file:
+$url = "https://www.cpagrip.com/common/offer_feed_json.php?user_id=2441114&key=7f0b09da3b2d682f1189d1d6abbf24fc&country=$country&tracking_id=$user_id&showall=1";
+    
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
