@@ -4,8 +4,8 @@ function load_offers($country, $user_id) {
     global $cpagripKey, $ogadsKey;
     $offers = [];
 
-        /* CPAGrip - Using cURL for better reliability */
-    $url = "https://www.cpagrip.com/common/offer_feed_json.php?user_id=2441114&key=7f0b09da3b2d682f1189d1d6abbf24fc&country=$country&tracking_id=$user_id&showall=1";
+    // আপনার বর্তমান $url লাইনটি মুছে দিয়ে এটি বসান:
+$url = "https://www.cpagrip.com/common/offer_feed_json.php?user_id=2441114&key=7f0b09da3b2d682f1189d1d6abbf24fc&country=$country&tracking_id=$user_id&showall=1&ip=1.1.1.1";
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
