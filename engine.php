@@ -1,35 +1,96 @@
 <?php
-function load_offers($country, $user_id) {
-    global $cpagripKey, $ogadsKey;
-    $offers = [];
 
-    // --- DEBUG START ---
-    // এই লিঙ্কটি কপি করে ব্রাউজারে চেক করুন অফার আছে কি না
-    $test_url = "https://www.cpagrip.com/common/offer_feed_json.php?pubkey=$cpagripKey&country=$country&tracking_id=$user_id";
-    // --- DEBUG END ---
+function load_offers($country,$user_id){
 
-    $feed = @file_get_contents($test_url);
-    $data = json_decode($feed, true);
+global $cpagripKey,$ogadsKey;
 
-    // ডিবাগিংয়ের জন্য: যদি ডাটা না আসে তবে এখানে এরর দেখাবে
-    if (!$data) {
-        return [["title" => "DEBUG: Error connecting to feed. URL: " . $test_url, "link" => "#", "payout" => "0", "image" => ""]];
+$offers=[];
+
+/* CPAGrip */
+// এখানে তোমার পাবলিক কি এবং প্রাইভেট কি দুটোই একসাথে ব্যবহার করছি
+$url = "https://www.cpagrip.com/common/offer_feed_json.php?pubkey=e90d61c5da43075bef08de5cb528bce2&key=7f0b09da3b2d682f1189d1d6abbf24fc&country=$country&tracking_id=$user_id";
+
+$feed = @file_get_contents($url);
+$data = json_decode($feed, true);
+
+if(isset($data['offers'])){
+    foreach($data['offers'] as $o){
+        $offers[]=[
+            "title"=>$o['title'],
+            "link"=>$o['offerlink'],
+            "payout"=>$o['payout'],
+            "image"=>$o['thumbnail']
+        ];
     }
-
-    if (isset($data['offers'])) {
-        foreach ($data['offers'] as $o) {
-            $offers[] = [
-                "title" => $o['title'] ?? 'No Title',
-                "link" => $o['offerlink'] ?? '#',
-                "payout" => $o['payout'] ?? '0',
-                "image" => $o['thumbnail'] ?? ''
-            ];
-        }
-    } else {
-        // যদি ডাটা আসে কিন্তু অফার না থাকে
-        return [["title" => "No offers found for country: " . $country, "link" => "#", "payout" => "0", "image" => ""]];
-    }
-
-    return array_slice($offers, 0, 50);
 }
-?>
+
+
+
+/* OGAds */
+
+if($ogadsKey){
+
+$feed2=@file_get_contents(
+"https://api.ogads.com/v1/offers?api_key=$ogadsKey&country=$country"
+);
+
+$data2=json_decode($feed2,true);
+
+if(isset($data2['offers'])){
+
+foreach($data2['offers'] as $o){
+
+$offers[]=[
+"title"=>$o['name'],
+"link"=>$o['link'],
+"payout"=>$o['payout'],
+"image"=>$o['image']
+];
+
+}
+
+}
+
+}
+
+/* FILTER */
+
+$filtered=[];
+
+foreach($offers as $o){
+
+if($o['payout'] < 0.10) continue;
+
+if(empty($o['link'])) continue;
+
+$filtered[]=$o;
+
+}
+
+/* REMOVE DUPLICATE */
+
+$unique=[];
+
+foreach($filtered as $o){
+
+$key=md5($o['title']);
+
+$unique[$key]=$o;
+
+}
+
+$filtered=array_values($unique);
+
+/* SORT */
+
+usort($filtered,function($a,$b){
+
+return $b['payout'] <=> $a['payout'];
+
+});
+
+/* LIMIT */
+
+return array_slice($filtered,0,50);
+
+}
