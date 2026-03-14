@@ -1,9 +1,9 @@
 <?php
-// ১. ইউজার ডাটাবেজ থেকে কান্ট্রি কোড পাওয়ার ফাংশন
 function get_user_country($user_id) {
     $supabaseUrl = getenv('SUPABASE_URL');
     $supabaseKey = getenv('SUPABASE_KEY');
     
+    // কান্ট্রি কোড চেক
     $url = "$supabaseUrl/rest/v1/user_data?id=eq.$user_id&select=country_code";
     
     $ch = curl_init();
@@ -14,19 +14,17 @@ function get_user_country($user_id) {
     curl_close($ch);
     
     $data = json_decode($result, true);
-    return $data[0]['country_code'] ?? 'US'; // যদি কিছু না পায় তবে 'US' ডিফল্ট হিসেবে থাকবে
+    return $data[0]['country_code'] ?? 'BD'; // ডিফল্ট BD বা US রাখুন
 }
 
-// ২. কান্ট্রি অনুযায়ী অফার লোড করার ফাংশন
 function load_offers($user_id) {
     $supabaseUrl = getenv('SUPABASE_URL');
     $supabaseKey = getenv('SUPABASE_KEY');
     
-    // প্রথমে কান্ট্রি কোড বের করুন
     $country = get_user_country($user_id);
 
-    // Supabase থেকে অফারগুলো আনুন
-    $url = "$supabaseUrl/rest/v1/all_offers?country=ilike.*$country*&select=*";
+    // কুয়েরি: দেশ এবং শুধু অ্যান্ড্রয়েড অফার ফিল্টার করা
+    $url = "$supabaseUrl/rest/v1/all_offers?country=ilike.*$country*&device=eq.Android&select=*";
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -35,6 +33,12 @@ function load_offers($user_id) {
     $offers = curl_exec($ch);
     curl_close($ch);
     
-    return json_decode($offers, true);
+    $data = json_decode($offers, true);
+    
+    // টেস্ট করার জন্য (এটি একবার রান করে দেখুন পেজে কী দেখাচ্ছে)
+    // echo "User Country: $country <br>";
+    // print_r($data); die(); 
+
+    return $data;
 }
 ?>
