@@ -1,4 +1,10 @@
+
 <?php
+// Force the browser to fetch new data each time
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 require_once 'engine.php'; 
 $userId = htmlspecialchars($_GET['user_id'] ?? '', ENT_QUOTES);
 $offers = !empty($userId) ? load_offers($userId) : [];
