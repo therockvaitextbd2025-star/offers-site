@@ -1,22 +1,57 @@
 <?php
-require_once 'engine.php'; // engine.php লোড করা হলো
+require_once 'engine.php'; 
 $userId = htmlspecialchars($_GET['user_id'] ?? '', ENT_QUOTES);
 $offers = !empty($userId) ? load_offers($userId) : [];
 ?>
 
-<div id="offers">
-    <?php if (empty($offers)): ?>
-        <p style='text-align:center;'>No offers right now.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXiRON Offerwall</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; }
+        .container { max-width: 500px; margin: auto; }
+        .offer-card { 
+            background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 15px; 
+            display: flex; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #28a745; 
+        }
+        .offer-card img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; margin-right: 15px; }
+        .offer-details { flex-grow: 1; }
+        .offer-details h3 { margin: 0; font-size: 16px; color: #333; }
+        .offer-details p { margin: 4px 0; font-size: 13px; color: #666; }
+        .reward { font-weight: bold; color: #28a745; font-size: 14px; }
+        .btn-start { 
+            background: #28a745; color: #fff; text-decoration: none; padding: 8px 15px; 
+            border-radius: 8px; font-size: 13px; font-weight: bold; transition: 0.3s;
+        }
+        .btn-start:hover { background: #218838; }
+        .no-offer { text-align: center; color: #999; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <?php if (empty($userId)): ?>
+        <p class="no-offer">Please login to see offers.</p>
+    <?php elseif (empty($offers)): ?>
+        <p class="no-offer">No offers available for your location right now.</p>
     <?php else: ?>
         <?php foreach ($offers as $o): ?>
-            <div class="offer">
-                <img src="<?php echo htmlspecialchars($o['image']); ?>" onerror="this.style.display='none'">
-                <div class="offer-info">
+            <div class="offer-card">
+                <img src="<?php echo htmlspecialchars($o['image']); ?>" alt="Icon" onerror="this.src='https://via.placeholder.com/60'">
+                <div class="offer-details">
                     <h3><?php echo htmlspecialchars($o['title']); ?></h3>
-                    <p>Reward: $<?php echo htmlspecialchars($o['payout']); ?></p>
+                    <p>Task: <?php echo htmlspecialchars($o['task_type']); ?></p>
+                    <p class="reward">Earn: $<?php echo htmlspecialchars($o['payout']); ?></p>
                 </div>
-                <a href="<?php echo htmlspecialchars($o['link']); ?>" target="_blank">Start</a>
+                <a href="<?php echo htmlspecialchars($o['link']); ?>" target="_blank" class="btn-start">Start</a>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+
+</body>
+</html>
