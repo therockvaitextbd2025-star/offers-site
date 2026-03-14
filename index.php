@@ -12,7 +12,10 @@ $offers = !empty($userId) ? load_offers($userId) : [];
     <title>AXiRON Offerwall</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; }
-        .container { max-width: 500px; margin: auto; }
+        
+        /* উইডথ ৯০% করার জন্য ম্যাক্স উইডথ বাড়িয়ে দিলাম */
+        .container { width: 90%; max-width: 600px; margin: auto; }
+        
         .offer-card { 
             background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 15px; 
             display: flex; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -22,7 +25,10 @@ $offers = !empty($userId) ? load_offers($userId) : [];
         .offer-details { flex-grow: 1; }
         .offer-details h3 { margin: 0; font-size: 16px; color: #333; }
         .offer-details p { margin: 4px 0; font-size: 13px; color: #666; }
+        
+        /* এখানে Earn: $ এর বদলে Count: 1 সেট করা হয়েছে */
         .reward { font-weight: bold; color: #28a745; font-size: 14px; }
+        
         .btn-start { 
             background: #28a745; color: #fff; text-decoration: none; padding: 8px 15px; 
             border-radius: 8px; font-size: 13px; font-weight: bold; transition: 0.3s;
@@ -45,7 +51,7 @@ $offers = !empty($userId) ? load_offers($userId) : [];
                 <div class="offer-details">
                     <h3><?php echo htmlspecialchars($o['title']); ?></h3>
                     <p>Task: <?php echo htmlspecialchars($o['task_type']); ?></p>
-                    <p class="reward">Earn: $<?php echo htmlspecialchars($o['payout']); ?></p>
+                    <p class="reward">Count: 1</p>
                 </div>
                 <a href="<?php echo htmlspecialchars($o['link']); ?>" target="_blank" class="btn-start">Start</a>
             </div>
