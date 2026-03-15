@@ -1,4 +1,3 @@
-
 <?php
 // Force the browser to fetch new data each time
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
