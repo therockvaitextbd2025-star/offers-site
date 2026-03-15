@@ -1,4 +1,3 @@
-
 <?php
 // Global Cache Control for all pages using this engine
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
