@@ -29,15 +29,21 @@ $offers = !empty($userId) ? load_offers($userId) : [];
         .offer-card { 
             background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 15px; 
             display: flex; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-left: 5px solid #28a745; position: relative;
+            border-left: 5px solid #28a745; position: relative; transition: 0.3s;
         }
-        .offer-card.completed { border-left: 5px solid #999; opacity: 0.7; }
+        .offer-card.completed { 
+            border-left: 5px solid #999; 
+            opacity: 0.5; 
+            filter: grayscale(100%); 
+            pointer-events: none; 
+        }
+        .status-available { color: #28a745; font-weight: bold; }
+        .status-completed { color: #6c757d; }
+
         .offer-card img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; margin-right: 15px; }
-        
         .offer-details { flex-grow: 1; }
         .offer-details h3 { margin: 0; font-size: 15px; color: #333; }
         
-        /* নতুন ব্যাজ স্টাইল (Task Type এর জন্য) */
         .task-badge { 
             display: inline-block; background: #e9ecef; color: #495057; 
             font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-bottom: 4px;
@@ -96,7 +102,13 @@ $offers = !empty($userId) ? load_offers($userId) : [];
                             <h3><?php echo htmlspecialchars($o['title']); ?></h3>
                             <div class="reward-info">
                                 <span class="earn-text">Earn: 1 Count</span> | 
-                                <span>Status: <?php echo ($o['is_completed'] ?? false) ? 'Completed' : 'Available'; ?></span>
+                                <span>Status: 
+                                    <?php if ($o['is_completed'] ?? false): ?>
+                                        <span class="status-completed">Completed</span>
+                                    <?php else: ?>
+                                        <span class="status-available">Available</span>
+                                    <?php endif; ?>
+                                </span>
                             </div>
                         </div>
                         
@@ -113,18 +125,17 @@ $offers = !empty($userId) ? load_offers($userId) : [];
 </div>
 
 <script>
-    // ৩০ মিনিট লজিক চেক
     function checkUnlockStatus() {
         const unlockTime = localStorage.getItem('axiron_unlock_time');
         if (unlockTime) {
             const currentTime = new Date().getTime();
-            const diff = (currentTime - unlockTime) / 1000 / 60; // মিনিটে কনভার্ট
+            const diff = (currentTime - unlockTime) / 1000 / 60; 
 
-            if (diff < 30) { // যদি ৩০ মিনিটের কম হয়
+            if (diff < 30) {
                 document.getElementById('unlock-area').style.display = 'none';
                 document.getElementById('offer-list-area').style.display = 'block';
             } else {
-                localStorage.removeItem('axiron_unlock_time'); // ৩০ মিনিট শেষ হলে রিমুভ
+                localStorage.removeItem('axiron_unlock_time');
             }
         }
     }
@@ -134,10 +145,7 @@ $offers = !empty($userId) ? load_offers($userId) : [];
     function handleUnlock() {
         const adLink = "https://acceptancesuicidegel.com/wuaw1fnkac?key=c0aaab542e005284cf06c34fc39bf233";
         window.open(adLink, '_blank');
-
-        // বর্তমান সময় মিলি-সেকেন্ডে সেভ করা
         localStorage.setItem('axiron_unlock_time', new Date().getTime());
-
         document.getElementById('unlock-area').style.display = 'none';
         document.getElementById('offer-list-area').style.display = 'block';
     }
