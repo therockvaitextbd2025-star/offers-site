@@ -13,7 +13,6 @@ $offers = !empty($userId) ? load_offers($userId) : [];
 <html lang="en">
 <head>
     <script type='text/javascript' src='//acceptancesuicidegel.com/2d/32/39/2d32392f450842f2143f0369c1ee7b60.js'></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AXiRON Offerwall</title>
@@ -21,24 +20,32 @@ $offers = !empty($userId) ? load_offers($userId) : [];
         body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; }
         .container { width: 95%; max-width: 600px; margin: auto; }
         
-        /* আনলক সেকশন স্টাইল */
         #unlock-section { 
             background: white; border-radius: 15px; padding: 40px 20px; 
             text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 50px;
         }
         .unlock-icon { font-size: 50px; margin-bottom: 15px; }
         
-        /* অফার কার্ড স্টাইল */
         .offer-card { 
             background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 15px; 
             display: flex; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-left: 5px solid #28a745; 
+            border-left: 5px solid #28a745; position: relative;
         }
         .offer-card.completed { border-left: 5px solid #999; opacity: 0.7; }
         .offer-card img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; margin-right: 15px; }
+        
         .offer-details { flex-grow: 1; }
         .offer-details h3 { margin: 0; font-size: 15px; color: #333; }
-        .reward { font-weight: bold; color: #28a745; font-size: 13px; margin-top: 5px; }
+        
+        /* নতুন ব্যাজ স্টাইল (Task Type এর জন্য) */
+        .task-badge { 
+            display: inline-block; background: #e9ecef; color: #495057; 
+            font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-bottom: 4px;
+            font-weight: bold; text-transform: uppercase;
+        }
+        
+        .reward-info { font-size: 12px; color: #666; margin-top: 3px; }
+        .earn-text { font-weight: bold; color: #28a745; }
         
         .btn-start { 
             background: #28a745; color: #fff; text-decoration: none; padding: 8px 15px; 
@@ -64,7 +71,7 @@ $offers = !empty($userId) ? load_offers($userId) : [];
                 <div class="unlock-icon">🔒</div>
                 <h3>Offers are Locked!</h3>
                 <p style="color:#666; font-size:14px; margin-bottom:20px;">
-                    To see high-paying offers, please click the button below and watch one ad to unlock.
+                    Unlock high-paying offers for 30 minutes by watching a quick ad.
                 </p>
                 <button class="btn-unlock" onclick="handleUnlock()">🔓 Unlock Now</button>
             </div>
@@ -85,8 +92,12 @@ $offers = !empty($userId) ? load_offers($userId) : [];
                     <div class="offer-card <?php echo ($o['is_completed'] ?? false) ? 'completed' : ''; ?>">
                         <img src="<?php echo htmlspecialchars($o['image']); ?>" alt="Icon" onerror="this.src='https://via.placeholder.com/60'">
                         <div class="offer-details">
+                            <span class="task-badge"><?php echo htmlspecialchars($o['task_type'] ?? 'Task'); ?></span>
                             <h3><?php echo htmlspecialchars($o['title']); ?></h3>
-                            <p class="reward">Reward: <?php echo ($o['is_completed'] ?? false) ? 'Completed' : 'Available'; ?></p>
+                            <div class="reward-info">
+                                <span class="earn-text">Earn: 1 Count</span> | 
+                                <span>Status: <?php echo ($o['is_completed'] ?? false) ? 'Completed' : 'Available'; ?></span>
+                            </div>
                         </div>
                         
                         <?php if ($o['is_completed'] ?? false): ?>
@@ -98,19 +109,35 @@ $offers = !empty($userId) ? load_offers($userId) : [];
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-
     <?php endif; ?>
 </div>
 
 <script>
+    // ৩০ মিনিট লজিক চেক
+    function checkUnlockStatus() {
+        const unlockTime = localStorage.getItem('axiron_unlock_time');
+        if (unlockTime) {
+            const currentTime = new Date().getTime();
+            const diff = (currentTime - unlockTime) / 1000 / 60; // মিনিটে কনভার্ট
+
+            if (diff < 30) { // যদি ৩০ মিনিটের কম হয়
+                document.getElementById('unlock-area').style.display = 'none';
+                document.getElementById('offer-list-area').style.display = 'block';
+            } else {
+                localStorage.removeItem('axiron_unlock_time'); // ৩০ মিনিট শেষ হলে রিমুভ
+            }
+        }
+    }
+
+    window.onload = checkUnlockStatus;
+
     function handleUnlock() {
-        // তোর Adsterra Direct Link (wuaw1fnk...)
         const adLink = "https://acceptancesuicidegel.com/wuaw1fnkac?key=c0aaab542e005284cf06c34fc39bf233";
-        
-        // ১. নতুন উইন্ডোতে পপ-আন্ডার অ্যাড ওপেন হবে
         window.open(adLink, '_blank');
 
-        // ২. একই পেজে আনলক সেকশন লুকিয়ে অফার লিস্ট দেখাবে
+        // বর্তমান সময় মিলি-সেকেন্ডে সেভ করা
+        localStorage.setItem('axiron_unlock_time', new Date().getTime());
+
         document.getElementById('unlock-area').style.display = 'none';
         document.getElementById('offer-list-area').style.display = 'block';
     }
