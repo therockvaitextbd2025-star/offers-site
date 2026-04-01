@@ -75,11 +75,12 @@ $offers = !empty($userId) ? load_offers($userId) : [];
         <div id="unlock-area">
             <div id="unlock-section">
                 <div class="unlock-icon">🔒</div>
-                <h3>Offers are Locked!</h3>
-                <p style="color:#666; font-size:14px; margin-bottom:20px;">
-                    Unlock high-paying offers for 30 minutes by watching a quick ad.
-                </p>
-                <button class="btn-unlock" onclick="handleUnlock()">🔓 Unlock Now</button>
+                <h3 id="unlock-title">Offers are Locked!</h3>
+<p id="unlock-instruction" style="color:#666; font-size:14px; margin-bottom:20px;">
+    Unlock offers for 45 minutes by watching 3 quick ads. <br>
+    <b id="ad-count-text" style="color: #28a745;">Remaining: 3 ads</b>
+</p>
+<button id="unlock-btn" class="btn-unlock" onclick="handleUnlock()">🔓 Watch Ad (1/3)</button>
             </div>
         </div>
 
@@ -125,17 +126,19 @@ $offers = !empty($userId) ? load_offers($userId) : [];
 </div>
 
 <script>
+    // ৪৫ মিনিট এবং ৩টি ক্লিকের লজিক
     function checkUnlockStatus() {
         const unlockTime = localStorage.getItem('axiron_unlock_time');
         if (unlockTime) {
             const currentTime = new Date().getTime();
             const diff = (currentTime - unlockTime) / 1000 / 60; 
 
-            if (diff < 30) {
+            if (diff < 45) { // ৩০ এর বদলে ৪৫ মিনিট
                 document.getElementById('unlock-area').style.display = 'none';
                 document.getElementById('offer-list-area').style.display = 'block';
             } else {
                 localStorage.removeItem('axiron_unlock_time');
+                localStorage.removeItem('axiron_click_count');
             }
         }
     }
@@ -143,13 +146,31 @@ $offers = !empty($userId) ? load_offers($userId) : [];
     window.onload = checkUnlockStatus;
 
     function handleUnlock() {
+        let currentClicks = parseInt(localStorage.getItem('axiron_click_count') || "0");
         const adLink = "https://acceptancesuicidegel.com/wuaw1fnkac?key=c0aaab542e005284cf06c34fc39bf233";
-        window.open(adLink, '_blank');
-        localStorage.setItem('axiron_unlock_time', new Date().getTime());
-        document.getElementById('unlock-area').style.display = 'none';
-        document.getElementById('offer-list-area').style.display = 'block';
+        
+        currentClicks++;
+        
+        if (currentClicks < 3) {
+            // ১ এবং ২ নম্বর ক্লিকের সময় শুধু অ্যাড ওপেন হবে
+            localStorage.setItem('axiron_click_count', currentClicks);
+            window.open(adLink, '_blank');
+            
+            // বাটন এবং টেক্সট আপডেট
+            document.getElementById('ad-count-text').innerText = "Remaining: " + (3 - currentClicks) + " ads";
+            document.getElementById('unlock-btn').innerText = "🔓 Watch Ad (" + (currentClicks + 1) + "/3)";
+        } else {
+            // ৩ নম্বর ক্লিক হয়ে গেলে আনলক হবে
+            window.open(adLink, '_blank');
+            localStorage.setItem('axiron_unlock_time', new Date().getTime());
+            localStorage.removeItem('axiron_click_count');
+            
+            document.getElementById('unlock-area').style.display = 'none';
+            document.getElementById('offer-list-area').style.display = 'block';
+        }
     }
 </script>
+
 
 </body>
 </html>
