@@ -4,7 +4,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-require_once 'engines.php'; 
+require_once 'engine.php'; 
 $userId = htmlspecialchars($_GET['user_id'] ?? '', ENT_QUOTES);
 $offers = !empty($userId) ? load_offers($userId) : [];
 ?>
@@ -133,7 +133,7 @@ $offers = !empty($userId) ? load_offers($userId) : [];
             const currentTime = new Date().getTime();
             const diff = (currentTime - unlockTime) / 1000 / 60; 
 
-            if (diff < 45) { // ৩০ এর বদলে ৪৫ মিনিট
+            if (diff < 5) { // ৩০ এর বদলে ৪৫ মিনিট
                 document.getElementById('unlock-area').style.display = 'none';
                 document.getElementById('offer-list-area').style.display = 'block';
             } else {
