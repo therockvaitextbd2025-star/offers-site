@@ -52,5 +52,8 @@ function load_offers($user_id) {
     }
 
     return $offers;
+    $userId = $_GET['user_id'] ?? '';
+$finalOffers = load_offers($userId);
+echo json_encode($finalOffers);
 }
 ?>
